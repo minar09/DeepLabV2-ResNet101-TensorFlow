@@ -17,6 +17,10 @@ eggs/
 lib/
 lib64/
 parts/
+.idea/
+dataset/
+images/
+checkpoints/
 sdist/
 var/
 wheels/
