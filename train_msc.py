@@ -17,26 +17,27 @@ import tensorflow as tf
 import numpy as np
 
 from deeplab_resnet import DeepLabResNetModel, ImageReader, decode_labels, inv_preprocess, prepare_label
+from deeplab_resnet.utils import load, save
 
 IMG_MEAN = np.array((104.00698793, 116.66876762,
                      122.67891434), dtype=np.float32)
 
 BATCH_SIZE = 1
-DATA_DIRECTORY = '/home/VOCdevkit'
-DATA_LIST_PATH = './dataset/train.txt'
+DATA_DIRECTORY = 'D:/Datasets/Dressup10k/images/training/'
+DATA_LIST_PATH = 'D:/Datasets/Dressup10k/list/train.txt'
 GRAD_UPDATE_EVERY = 10
 IGNORE_LABEL = 255
 INPUT_SIZE = '321,321'
 LEARNING_RATE = 2.5e-4
 MOMENTUM = 0.9
-NUM_CLASSES = 21
+NUM_CLASSES = 18
 NUM_STEPS = 20001
 POWER = 0.9
 RANDOM_SEED = 1234
 RESTORE_FROM = './deeplab_resnet.ckpt'
 SAVE_NUM_IMAGES = 1
 SAVE_PRED_EVERY = 1000
-SNAPSHOT_DIR = './snapshots/'
+SNAPSHOT_DIR = './checkpoints/deeplabv2-resnet-10k/'
 WEIGHT_DECAY = 0.0005
 
 
@@ -90,36 +91,6 @@ def get_arguments():
     parser.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY,
                         help="Regularisation parameter for L2-loss.")
     return parser.parse_args()
-
-
-def save(saver, sess, logdir, step):
-    '''Save weights.
-
-    Args:
-      saver: TensorFlow Saver object.
-      sess: TensorFlow session.
-      logdir: path to the snapshots directory.
-      step: current training step.
-    '''
-    model_name = 'model.ckpt'
-    checkpoint_path = os.path.join(logdir, model_name)
-
-    if not os.path.exists(logdir):
-        os.makedirs(logdir)
-    saver.save(sess, checkpoint_path, global_step=step)
-    print('The checkpoint has been created.')
-
-
-def load(saver, sess, ckpt_path):
-    '''Load trained weights.
-
-    Args:
-      saver: TensorFlow Saver object.
-      sess: TensorFlow session.
-      ckpt_path: path to checkpoint file with parameters.
-    '''
-    saver.restore(sess, ckpt_path)
-    print("Restored model parameters from {}".format(ckpt_path))
 
 
 def main():
@@ -309,9 +280,9 @@ def main():
     saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=10)
 
     # Load variables if the checkpoint is provided.
-    if args.restore_from is not None:
+    if args.snapshot_dir is not None:
         loader = tf.train.Saver(var_list=restore_var)
-        load(loader, sess, args.restore_from)
+        load(loader, sess, args.snapshot_dir)
 
     # Start queue threads.
     threads = tf.train.start_queue_runners(coord=coord, sess=sess)
