@@ -25,7 +25,7 @@ DATA_DIRECTORY = 'D:/Datasets/Dressup10k/images/validation/'
 DATA_LIST_PATH = 'D:/Datasets/Dressup10k/list/val.txt'
 IGNORE_LABEL = 255
 NUM_CLASSES = 18
-NUM_STEPS = 1449  # Number of images in the validation set.
+NUM_STEPS = 1000  # Number of images in the validation set.
 RESTORE_FROM = './checkpoints/deeplabv2-resnet-10k/'
 
 

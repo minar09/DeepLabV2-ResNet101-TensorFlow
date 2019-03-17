@@ -11,11 +11,13 @@ from datetime import datetime
 import os
 import sys
 import time
+import cv2
+from PIL import Image
 
 import tensorflow as tf
 import numpy as np
 
-from deeplab_resnet import DeepLabResNetModel, ImageReader, prepare_label
+from deeplab_resnet import DeepLabResNetModel, ImageReader, prepare_label, decode_labels
 from deeplab_resnet.utils import load
 
 IMG_MEAN = np.array((104.00698793, 116.66876762,
@@ -25,7 +27,8 @@ DATA_DIRECTORY = 'D:/Datasets/Dressup10k/images/validation/'
 DATA_LIST_PATH = 'D:/Datasets/Dressup10k/list/val.txt'
 IGNORE_LABEL = 255
 NUM_CLASSES = 18
-NUM_STEPS = 1449  # Number of images in the validation set.
+SAVE_DIR = './output/'
+NUM_STEPS = 1000  # Number of images in the validation set.
 RESTORE_FROM = './checkpoints/deeplabv2-resnet-10k/'
 
 
@@ -48,6 +51,8 @@ def get_arguments():
                         help="Number of images in the validation set.")
     parser.add_argument("--restore-from", type=str, default=RESTORE_FROM,
                         help="Where restore model parameters from.")
+    parser.add_argument("--save-dir", type=str, default=SAVE_DIR,
+                        help="Where to save predicted mask.")
     return parser.parse_args()
 
 
@@ -116,6 +121,13 @@ def main():
     # Iterate over training steps.
     for step in range(args.num_steps):
         preds, _ = sess.run([pred, update_op])
+
+        if args.save_dir is not None:
+            img = decode_labels(preds[0, :, :, 0])
+            im = Image.fromarray(img)
+            im.save(args.save_dir + str(step) + '_vis.png')
+            cv2.imwrite(args.save_dir + str(step) + '.png', preds[0, :, :, 0])
+
         if step % 100 == 0:
             print('step {:d}'.format(step))
     print('Mean IoU: {:.3f}'.format(mIoU.eval(session=sess)))

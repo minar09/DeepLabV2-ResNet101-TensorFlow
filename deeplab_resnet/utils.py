@@ -4,15 +4,28 @@ import os
 import tensorflow as tf
 
 # colour map
-label_colours = [(0, 0, 0)                 # 0=background
-                 # 1=aeroplane, 2=bicycle, 3=bird, 4=boat, 5=bottle
-                 # 6=bus, 7=car, 8=cat, 9=chair, 10=cow
-                 # 11=diningtable, 12=dog, 13=horse, 14=motorbike, 15=person
-                 , (128, 0, 0), (0, 128, 0), (128, 128, 0), (0, 0, 128), (128, 0, 128), (0, 128, 128), (128, 128, 128), (64, 0, 0), (192, 0, 0), (64, 128, 0), (192, 128, 0), (64, 0, 128), (192, 0, 128), (64, 128, 128), (192, 128, 128), (0, 64, 0), (128, 64, 0), (0, 192, 0), (128, 192, 0), (0, 64, 128)]
-# 16=potted plant, 17=sheep, 18=sofa, 19=train, 20=tv/monitor
+label_colours = [(0, 0, 0),  # 0=Background
+                 (128, 0, 0),  # hat
+                 (255, 0, 0),  # hair
+                 (170, 0, 51),  # sunglasses
+                 (255, 85, 0),  # upper-clothes
+                 (0, 128, 0),  # skirt
+                 (0, 85, 85),  # pants
+                 (0, 0, 85),  # dress
+                 (0, 85, 0),  # belt
+                 (255, 255, 0),  # Left-shoe
+                 (255, 170, 0),  # Right-shoe
+                 (0, 0, 255),  # face
+                 (85, 255, 170),  # left-leg
+                 (170, 255, 85),  # right-leg
+                 (51, 170, 221),  # left-arm
+                 (0, 255, 255),  # right-arm
+                 (85, 51, 0),  # bag
+                 (52, 86, 128)  # scarf
+                 ]
 
 
-def decode_labels(mask, num_images=1, num_classes=21):
+def decode_labels(mask, num_images=1, num_classes=18):
     """Decode batch of segmentation masks.
 
     Args:
